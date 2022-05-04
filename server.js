@@ -54,6 +54,24 @@ envelopeRouter.post('/', (req, res) => {
     res.status(200).send(req.body)
 })
 
+envelopeRouter.post('/transfer/:budgetOne/:budgetTwo', (req, res) => {
+    const budgetOne = req.params.budgetOne;
+    const budgetTwo = req.params.budgetTwo;
+    const transferAmount = req.body.amount;
+
+    try {
+        Budget.Envelopes.transferMoney(budgetOne, budgetTwo, transferAmount);
+        updatedBudgets = {
+            budgetOne: Budget.Envelopes.getEnvelope(budgetOne),
+            budgetTwo: Budget.Envelopes.getEnvelope(budgetTwo)
+        }
+
+        res.status(200).send(updatedBudgets)
+    } catch (error) {
+        res.status(403).send(error);
+    }
+});
+
 app.use('/envelopes', envelopeRouter)
 
 app.listen(port, () => {
