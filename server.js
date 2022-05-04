@@ -52,7 +52,7 @@ envelopeRouter.post('/', (req, res) => {
 //get specific budget
 envelopeRouter.get('/:budgetName', (req, res) => {
     try {
-        const envelope = Budget.Envelopes.getEnvelope(req.params.budgetName);
+        const envelope = Budget.Envelopes.getEnvelope(req.budgetName);
         res.status(200).send(envelope);
     } catch (error) {
         res.status(403).send(error);
