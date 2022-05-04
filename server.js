@@ -13,15 +13,13 @@ app.use(express.json())
 //grabs budget information and passes it to route
 envelopeRouter.param('budgetName',(req, res, next, name) => {
     const budgetName = name;
-    const budget =  Budget.Envelopes.getEnvelope(budgetName);
-    const newBudget = req.body.budget
-    if (!budget) {
-        res.status(404).send('Not found!')
-    } else {
+    try {
+        const budget =  Budget.Envelopes.getEnvelope(budgetName);
         req.budgetName = budgetName;
         req.budget = budget;
-        req.newBudget = newBudget
         next();
+    } catch (error) {
+        res.status(404).send(error);
     }
 })
 
@@ -51,7 +49,7 @@ envelopeRouter.post('/', (req, res) => {
 
 //get specific budget
 envelopeRouter.get('/:budgetName', (req, res) => {
-    res.send(req.budget.toString());
+    res.send(req.budget);
 })
 //delete budget
 envelopeRouter.delete('/:budgetName', (req, res) => {
@@ -60,7 +58,7 @@ envelopeRouter.delete('/:budgetName', (req, res) => {
 })
 //update budget
 envelopeRouter.put('/:budgetName', (req, res) => {
-    Budget.Envelopes.setEnvelope(req.budgetName, req.newBudget);
+    Budget.Envelopes.setEnvelope(req.budgetName, req.body.budget);
     const updatedBudgets = Budget.Envelopes.getEnvelope(req.budgetName);
 
     res.status(200).send(updatedBudgets);
