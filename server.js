@@ -61,10 +61,10 @@ envelopeRouter.post('/transfer/:budgetOne/:budgetTwo', (req, res) => {
 
     try {
         Budget.Envelopes.transferMoney(budgetOne, budgetTwo, transferAmount);
-        updatedBudgets = {
-            budgetOne: Budget.Envelopes.getEnvelope(budgetOne),
-            budgetTwo: Budget.Envelopes.getEnvelope(budgetTwo)
-        }
+
+        updatedBudgets = {}
+        updatedBudgets[budgetOne] = Budget.Envelopes.getEnvelope(budgetOne);
+        updatedBudgets[budgetTwo] = Budget.Envelopes.getEnvelope(budgetTwo);
 
         res.status(200).send(updatedBudgets)
     } catch (error) {
