@@ -27,7 +27,7 @@ envelopeRouter.param('budgetName',(req, res, next, name) => {
 
 //welcome page
 app.get('/', (req, res, next) => {
-    res.send('Welcome!')
+    res.status(200).send('Welcome!')
 })
 
 //#########################  All Routes  #################################
