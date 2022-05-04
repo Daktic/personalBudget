@@ -36,7 +36,7 @@ app.get('/', (req, res, next) => {
 envelopeRouter.get('/', (req, res) => {
     const envelopes = Budget.Envelopes.getEnvelopes();
     if (envelopes) {
-        res.send(envelopes)
+        res.status(200).send(envelopes)
     } else {
         res.status(404).send("not found!")
     }  
@@ -44,14 +44,14 @@ envelopeRouter.get('/', (req, res) => {
 //add envelope
 envelopeRouter.post('/', (req, res) => {
     Budget.Envelopes.setEnvelope(req.body.budgetName,req.body.budget)
-    res.status(200).send(req.body)
+    res.status(201).send(req.body)
 })
 
 //#########################  Budget Routes  #################################
 
 //get specific budget
 envelopeRouter.get('/:budgetName', (req, res) => {
-    res.status(200).send(req.budget);   
+    res.send(req.budget.toString());
 })
 //delete budget
 envelopeRouter.delete('/:budgetName', (req, res) => {
