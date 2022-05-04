@@ -10,7 +10,7 @@ class Envelopes {
         return this.envelopeList;
     }
 
-    createEnvelope(budgetName, budget) {
+    setEnvelope(budgetName, budget) {
         this.envelopeList[budgetName] = budget;
     }
 

@@ -45,11 +45,25 @@ envelopeRouter.delete('/:budgetName', (req, res) => {
     
 })
 
+envelopeRouter.put('/:budgetName', (req, res) => {
+    const budgetName = req.params.budgetName;
+    const newBudget = req.body.budget;
+
+    if (Budget.Envelopes.getEnvelope(budgetName)) {
+        Budget.Envelopes.setEnvelope(budgetName, newBudget);
+        const updatedBudgets = {};
+        updatedBudgets[budgetName] = Budget.Envelopes.getEnvelope(budgetName);
+
+        res.status(200).send(updatedBudgets);
+    } else {
+        res.status(404).send("not found!");
+    }
+});
 
 envelopeRouter.post('/', (req, res) => {
     const budgetName = req.body.budgetName;
     const budget = req.body.budget;
-    Budget.Envelopes.createEnvelope(budgetName,budget)
+    Budget.Envelopes.setEnvelope(budgetName,budget)
     
     res.status(200).send(req.body)
 })
@@ -62,7 +76,7 @@ envelopeRouter.post('/transfer/:budgetOne/:budgetTwo', (req, res) => {
     try {
         Budget.Envelopes.transferMoney(budgetOne, budgetTwo, transferAmount);
 
-        updatedBudgets = {}
+        const updatedBudgets = {}
         updatedBudgets[budgetOne] = Budget.Envelopes.getEnvelope(budgetOne);
         updatedBudgets[budgetTwo] = Budget.Envelopes.getEnvelope(budgetTwo);
 
