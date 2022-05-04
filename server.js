@@ -51,7 +51,12 @@ envelopeRouter.post('/', (req, res) => {
 
 //get specific budget
 envelopeRouter.get('/:budgetName', (req, res) => {
-    res.status(200).send(req.budget);   
+    try {
+        const envelope = Budget.Envelopes.getEnvelope(req.params.budgetName);
+        res.status(200).send(envelope);
+    } catch (error) {
+        res.status(403).send(error);
+    }
 })
 //delete budget
 envelopeRouter.delete('/:budgetName', (req, res) => {
@@ -61,8 +66,7 @@ envelopeRouter.delete('/:budgetName', (req, res) => {
 //update budget
 envelopeRouter.put('/:budgetName', (req, res) => {
     Budget.Envelopes.setEnvelope(req.budgetName, req.newBudget);
-    const updatedBudgets = {};
-    updatedBudgets[req.budgetName] = Budget.Envelopes.getEnvelope(req.budgetName);
+    const updatedBudgets = Budget.Envelopes.getEnvelope(req.budgetName);
 
     res.status(200).send(updatedBudgets);
 });
@@ -78,9 +82,7 @@ envelopeRouter.post('/transfer/:budgetOne/:budgetTwo', (req, res) => {
     try {
         Budget.Envelopes.transferMoney(budgetOne, budgetTwo, transferAmount);
 
-        const updatedBudgets = {}
-        updatedBudgets[budgetOne] = Budget.Envelopes.getEnvelope(budgetOne);
-        updatedBudgets[budgetTwo] = Budget.Envelopes.getEnvelope(budgetTwo);
+        const updatedBudgets = Budget.Envelopes.getEnvelope([budgetOne, budgetTwo]);
 
         res.status(200).send(updatedBudgets)
     } catch (error) {

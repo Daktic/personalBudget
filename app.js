@@ -15,7 +15,23 @@ class Envelopes {
     }
 
     getEnvelope(budgetName) {
-        return this.envelopeList[budgetName];
+        if (Array.isArray(budgetName)) {
+            const selectedBudgets = {};
+            for (let budget of budgetName) {
+                if (this.envelopeList.hasOwnProperty(budget)) {
+                    selectedBudgets[budget] = this.envelopeList[budget];
+                } else {
+                    throw `No budget named ${budgetName}.`;
+                }
+            }
+            return selectedBudgets;
+        } else if (this.envelopeList.hasOwnProperty(budgetName)) {
+            const selectedBudgets = {};
+            selectedBudgets[budgetName] = this.envelopeList[budgetName];
+            return selectedBudgets
+        } else {
+            throw `No budget named ${budgetName}.`;
+        }
     }
 
     /* Transfers "amount" money from budgetOne to budgetTwo */
