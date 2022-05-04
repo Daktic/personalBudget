@@ -6,8 +6,22 @@ const app = express()
 const port = 3000
 
 const envelopeRouter = express.Router()
+const budgetRouter = express.Router()
 
 app.use(express.json())
+
+envelopeRouter.param('budgetName',(req, res, next, name) => {
+    const budgetName = name;
+    const budget =  Budget.Envelopes.getEnvelope(budgetName);
+    if (!budget) {
+        res.status(404).send('Not found!')
+    } else {
+        req.budgetName = budgetName;
+        req.budget = budget;
+        next();
+    }
+})
+
 
 app.get('/', (req, res, next) => {
     res.send('Welcome!')
@@ -18,41 +32,28 @@ envelopeRouter.get('/', (req, res) => {
     if (envelopes) {
         res.send(envelopes)
     } else {
-        res.Status(404).send("not found!")
-    }
-    
-})
-
-envelopeRouter.get('/:budgetName', (req, res) => {
-    
-    envelope = Budget.Envelopes.getEnvelope(req.params.budgetName);
-    if (envelope){
-        res.status(200).send(envelope)
-    } else {
-        res.Status(404).send("not found!")
-    }
-    
-})
-
-envelopeRouter.delete('/:budgetName', (req, res) => {
-    envelope = Budget.Envelopes.getEnvelope(req.params.budgetName);
-    if (envelope){
-        Budget.Envelopes.deleteEnvelope(req.params.budgetName);
-        res.status(203).send(Budget.Envelopes.getEnvelopes())
-    } else {
         res.status(404).send("not found!")
     }
     
 })
 
+
+//Budget Routes
+envelopeRouter.get('/:budgetName', (req, res) => {
+    res.status(200).send(req.budget);   
+    
+})
+envelopeRouter.delete('/:budgetName', (req, res) => {
+        Budget.Envelopes.deleteEnvelope(req.budgetName);
+        res.status(203).send(Budget.Envelopes.getEnvelopes()) 
+})
 envelopeRouter.put('/:budgetName', (req, res) => {
-    const budgetName = req.params.budgetName;
     const newBudget = req.body.budget;
 
-    if (Budget.Envelopes.getEnvelope(budgetName)) {
-        Budget.Envelopes.setEnvelope(budgetName, newBudget);
+    if (Budget.Envelopes.getEnvelope(req.budgetName)) {
+        Budget.Envelopes.setEnvelope(req.budgetName, newBudget);
         const updatedBudgets = {};
-        updatedBudgets[budgetName] = Budget.Envelopes.getEnvelope(budgetName);
+        updatedBudgets[req.budgetName] = Budget.Envelopes.getEnvelope(req.budgetName);
 
         res.status(200).send(updatedBudgets);
     } else {
